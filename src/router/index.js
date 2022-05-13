@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Detection from '../views/Detection'
+
 // import DetectionTest from '../views/Detection-Test'
 Vue.use(VueRouter);
 const includePush = VueRouter.prototype.push;
@@ -53,6 +54,11 @@ const routes = [
         path: "/detection/buy",
         name: "detection_buy",
         component: () => import("../views/Detection-Buy"),
+      },
+      {
+        path: "/detection/detail",
+        name: "detection_detail",
+        component: () => import("../views/Detection-detail"),
       },
     ],
     beforeEnter(to, from, next) {

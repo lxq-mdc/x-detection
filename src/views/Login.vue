@@ -6,7 +6,7 @@
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="form.password" autocomplete="on"></el-input>
+          <el-input v-model="form.password" type="password" autocomplete="on"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { Message } from "element-ui";
 export default {
   name: "Login",
   data(){
@@ -44,10 +45,20 @@ export default {
       })
     },
     intoDetection(){
-      this.dialogFormVisible = false
-      this.$router.push({
-        name:"detection"
-      })
+
+      if(this.form.name==='admin'&&this.form.password==='123456'){
+        Message.success('登录成功');
+        this.dialogFormVisible = false
+        localStorage.setItem('token','admin')
+        this.$router.push({
+          name:"detection"
+        })
+      }else {
+         Message.error('用户名或者密码错误');
+         this.form.name=''
+        this.form.password=''
+      }
+
     }
   },
 

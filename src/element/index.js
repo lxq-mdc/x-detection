@@ -25,9 +25,19 @@ import {
   Message,
   Card,
   Image,
+  DatePicker,
+  Table,
+  TableColumn,
+  Pagination,
+  Progress,
 } from "element-ui";
 const element = {
   install: function (Vue) {
+    Vue.use(Progress);
+    Vue.use(TableColumn);
+    Vue.use(Pagination);
+    Vue.use(Table);
+    Vue.use(DatePicker);
     Vue.use(Message);
     Vue.use(Image);
     Vue.use(Card);

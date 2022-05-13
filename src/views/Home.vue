@@ -11,33 +11,39 @@
         active-text-color="#ffd04b"
       >
         <router-link to="/login">
-          <el-menu-item index="5" style="float: right"> 登录 </el-menu-item>
+          <el-menu-item index="5" style="float: right;margin-top: 20px"> 登录 </el-menu-item>
         </router-link>
         <router-link to="/detection">
-          <el-menu-item index="4" style="float: right">
+          <el-menu-item index="4" style="float: right;margin-top: 20px">
             检测工作台
           </el-menu-item>
         </router-link>
         <router-link to="/case">
-          <el-menu-item index="3" style="float: right">成功案例 </el-menu-item>
+          <el-menu-item index="3" style="float: right;margin-top: 20px">成功案例 </el-menu-item>
         </router-link>
         <router-link to="/about_us">
-          <el-menu-item index="2" style="float: right">关于我们 </el-menu-item>
+          <el-menu-item index="2" style="float: right;margin-top: 20px">关于我们 </el-menu-item>
         </router-link>
         <router-link to="/home">
-          <el-menu-item index="1" style="float: right">首页 </el-menu-item>
+          <el-menu-item index="1" style="float: right;margin-top: 20px">首页 </el-menu-item>
         </router-link>
-        <el-menu-item index="6" style="float: left">X-detection</el-menu-item>
+        <el-menu-item index="6" style="float: left;font-size: 30px;margin-left: 30px">X-detection</el-menu-item>
       </el-menu>
     </el-header>
     <el-container>
-      <el-aside width="300px">
-        <img />
+      <el-aside width="300px" >
+        <img src="../assets/log.jpg" class="logo"/>
       </el-aside>
       <el-main>
-        <el-carousel trigger="click" height="150px">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <h3 class="small">{{ item }}</h3>
+        <el-carousel trigger="click" height="300px" class="carousel">
+          <el-carousel-item>
+           <img src="../assets/1.jpg">
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../assets/3.jpg">
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../assets/6.jpg">
           </el-carousel-item>
         </el-carousel>
       </el-main>
@@ -62,7 +68,18 @@ export default {
   },
 };
 </script>
-<style>
+<style >
+.carousel{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 20px;
+
+}
+.logo{
+  transform: translateY(50%);
+  width: 50%;
+}
 .el-header {
   padding: 0 !important;
 }
@@ -87,6 +104,7 @@ a {
   background-color: #e9eef3;
   color: #333;
   text-align: center;
+  /*padding-top: 30px;*/
   /* line-height: 160px; */
 }
 </style>

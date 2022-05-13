@@ -42,25 +42,60 @@
           "
           >未检测</el-button
         >
-        <el-card class="box-card" ref="box_card" v-html="ulContent"> </el-card>
+        <el-card class="box-card" ref="box_card" style="height: 60%">
+            <div v-for="item in msg" :key="item.info" @click="demo(item.src)">
+<!--              <span>{{item.info}}</span>-->
+              <img :src="item.src">
+            </div>
+
+        </el-card>
       </el-aside>
       <el-main>
         <div class="imgDetail">
-          <el-image style="width: 100%; height: 100%" :src="url"></el-image>
+          <el-image style="width: 100%; height: 50%" :src="url">
+            <div slot="error" class="image-slot">
+              未上传文件
+            </div>
+          </el-image>
         </div>
-        <el-button type="primary">上传项目</el-button>
+        <el-button type="primary" @click="uploadProject">上传项目</el-button>
+        <el-dialog title="" :visible.sync="dialogFormVisible">
+          <el-form :model="form">
+            <el-form-item label="项目名称" :label-width="formLabelWidth">
+              <el-input v-model="form.name" autocomplete="off" placeholder="请输入项目名称"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="projectCancel">取 消</el-button>
+            <el-button type="primary" @click="projectRequest">确 定</el-button>
+          </div>
+        </el-dialog>
       </el-main>
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside width="200px">
+        <el-button style="height: 30px; line-height: 5px; margin-top: 10px;width: 80%"
+        >已检测</el-button
+        >
+        <el-card class="box-card" style="margin-top: 15px;height: 90%" ref="box_card">
+          <div v-for="item in showImgs" :key="item.id"  @click="demo(item.downUrl)">
+            <img :src="item.downUrl">
+          </div>
+        </el-card>
+      </el-aside>
     </el-container>
   </div>
 </template>
 
 <script>
-
+import { upload } from "@/service";
 export default {
   name: "Detection-Test",
   data() {
     return {
+      form: {
+        name: '',
+      },
+      formLabelWidth: '120px',
+      dialogFormVisible: false,
       options: [
         {
           value: "全选",
@@ -88,29 +123,69 @@ export default {
         },
       ],
       value: "全选",
-      fileList: [
-        // {
-        //   name: "food.jpeg",
-        //   url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        // },
-        // {
-        //   name: "food2.jpeg",
-        //   url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        // },
-      ],
-      ulContent:'',
+      fileList: [],
+      ulContent: "",
       imgs: [],
-      url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
+      divs:[],
+      msg:[],
+      url: "",
+      showImgs:[]
     };
   },
   methods: {
+    //展示请求回来的图片
+    // bindClickEvent(){
+    //    for (let i = 0; i < this.showImgs.length; i++) {
+    //     (function(i){
+    //         this.showImgs[i].onClick=function(){
+    //           this.url=this.src
+    //         }
+    //     })(i)
+
+    //    }
+    // },
+    //获取需要上传的图片的名称
+    getImageName(){
+        let names = []
+      Array.from(this.fileList).forEach(item=>{
+          names.push(item.name)
+        })
+     return names
+    },
+    //上传项目
+    uploadProject(){
+      this.dialogFormVisible = true
+
+    },
+    //上传项目取消
+    projectCancel(){
+      this.dialogFormVisible = false
+      this.form.name=''
+    },
+    //上传项目确定，发送请求
+   async projectRequest(){
+      this.dialogFormVisible = false
+      // this.form.name=''
+      let uploadNames=  this.getImageName()
+      let projectName = this.form.name
+      console.log(uploadNames,projectName);
+      let result= await upload(projectName,uploadNames)
+      console.log('45678',result);
+      if(result.success){
+        this.showImgs=result.data
+        console.log(this.showImgs);
+      }
+    },
     handleFiles() {
       this.fileList = this.$refs.inputFile.files;
       this.handleFileList();
     },
+    demo(src){
+      this.url=src
+      console.log(this.msg);
+    },
     handleFileList() {
       window.URL = window.URL || window.webkitURL;
-      let div1 = document.createElement("div");
       let that = this;
       for (let i = 0; i < this.fileList.length; i++) {
         (function (i) {
@@ -120,34 +195,27 @@ export default {
           let info = document.createElement("span");
           info.innerHTML = `${i + 1}.`;
           div2.appendChild(info);
-
-
+          let obj={}
           let reader = new FileReader();
           reader.readAsDataURL(that.fileList[i]);
           reader.onload = function () {
             img.src = reader.result;
             img.height = 25;
-            div2.appendChild(img);
-            div1.appendChild(div2);
+            obj.src=reader.result;
+            obj.info=that.msg.length
+            that.msg.push(obj)
           };
-
-          // img.src=window.URL.createObjectURL(that.fileList[i])
-          // img.height=20
-          // img.onload=function(){
-          //   window.URL.revokeObjectURL(this.src)
-          // }
-          // div2.appendChild(img)
-          // div1.appendChild(div2)
         })(i);
       }
-      console.log(div1);
-      console.log(div1.innerHTML);
-      this.ulContent = div1.innerHTML
+      setTimeout(() => {
+        console.log('123',this.msg);
+      });
     },
   },
-  mounted() {},
-  beforeUpdate() {
+  mounted() {
+
   },
+  beforeUpdate() {},
 };
 </script>
 
@@ -174,6 +242,9 @@ export default {
   height: 200px;
   overflow: scroll;
   /*background-color: red;*/
+}
+.box-card img{
+  height: 25px;
 }
 .box-card div {
   margin: 0 auto;
